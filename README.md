@@ -5,8 +5,8 @@ This is a linear algebra project demonstrates matrix operations, Guassian Jordan
 ## What To Do
 Break down:
 
--Matrix Operations
--Gaussian Jordan Elimination
--Linear Regression
+- Matrix Operations
+- Gaussian Jordan Elimination
+- Linear Regression
 
 step by step and run to see result

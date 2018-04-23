@@ -5,7 +5,15 @@
 # 
 # ## 1.1 Create a 4*4 identity matrix
 
-# In[ ]:
+# In[1]:
+
+
+# Pick a integer
+
+seed = 321
+
+
+# In[2]:
 
 
 #This project is designed to get familiar with python list and linear algebra
@@ -34,7 +42,7 @@ I = [[1,0,0,0],
 
 # ## 1.2 get the width and height of a matrix. 
 
-# In[ ]:
+# In[3]:
 
 
 #TODO Get the height and weight of a matrix.
@@ -43,7 +51,7 @@ def shape(M):
     return len(M), len(M[0])
 
 
-# In[ ]:
+# In[4]:
 
 
 # run following code to test your shape function
@@ -52,7 +60,7 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 
 # ## 1.3 round all elements in M to certain decimal points
 
-# In[ ]:
+# In[5]:
 
 
 # TODO in-place operation, no return value
@@ -64,7 +72,7 @@ def matxRound(M, decPts=4):
             M[r][c] = round(M[r][c], decPts)
 
 
-# In[ ]:
+# In[6]:
 
 
 # run following code to test your matxRound function
@@ -73,7 +81,7 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 
 # ## 1.4 compute transpose of M
 
-# In[ ]:
+# In[7]:
 
 
 #TODO compute transpose of M
@@ -84,7 +92,7 @@ def transpose(M):
     return [list(col) for col in zip(*M)]
 
 
-# In[ ]:
+# In[8]:
 
 
 # run following code to test your transpose function
@@ -93,32 +101,24 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 
 # ## 1.5 compute AB. return None if the dimensions don't match
 
-# In[ ]:
+# In[9]:
 
 
 #TODO compute matrix multiplication AB, return None if the dimensions don't match
 def matxMultiply(A, B):
     """matrix multiplication"""
-    row_a, col_a = shape(A)
-    row_b, col_b = shape(B)
-    if col_a == row_b:
-        res = []
-        for i in range(row_a):
-            res.append([])
-            for j in range(col_b):
-                ele_sum = 0
-                for s in range(col_a):
-                    matx_ele = A[i][s] * B[s][j]
-                    if mtx-ele is list:
-                        print(matx_ele)
-                    ele_sum += matx_ele
-                res[i].append(ele_sum)
-        return res
-    else:
-        raise ValueError
+    if len(A[0]) != len(B):
+        raise ValueError('Cannot multiply A and B')
+        
+    result = [[0] * len(B[0]) for i in range(len(A))]
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+    return result
 
 
-# In[ ]:
+# In[10]:
 
 
 # run following code to test your matxMultiply function
@@ -152,24 +152,18 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 #     ...    & ... & ... & ...& ...\\
 #     a_{n1}    & a_{n2} & ... & a_{nn} & b_{n} \end{bmatrix}$
 
-# In[ ]:
+# In[11]:
 
 
 #TODO construct the augment matrix of matrix A and column vector b, assuming A and b have same number of rows
 def augmentMatrix(A, b):
-    if len(A) != len(b):
-        raise ValueError
-    else:
-        augment_mat = []
-        for r in range(shape(A)[0]):
-            augment_mat.append([])
-            for c in range(shape(A)[1]):
-                augment_mat[r].append(a[r][c])
-            augment_mat[r].append(b[r][0])
-        return augment_mat
+    Ab = []
+    for i in range(len(A)):
+        Ab.append(A[i] + b[i])
+    return Ab
 
 
-# In[ ]:
+# In[12]:
 
 
 # run following code to test your augmentMatrix function
@@ -181,26 +175,25 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 # - scale a row
 # - add a scaled row to another
 
-# In[ ]:
+# In[13]:
 
 
 # TODO r1 <---> r2
 # TODO in-place operation, no return value
 def swapRows(M, r1, r2):
-    if (0 <= r1 < len(M)) and (0 <= r2 < len(M))
-        M[r1], M[r2] = M[r2], M[r1]
-    else:
-        raise IndexError('list index out of range')
+    temp = M[r1]
+    M[r1] = M[r2]
+    M[r2] = temp
 
 
-# In[ ]:
+# In[14]:
 
 
 # run following code to test your swapRows function
 get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test_swapRows')
 
 
-# In[ ]:
+# In[15]:
 
 
 # TODO r1 <--- r1 * scale
@@ -212,14 +205,14 @@ def scaleRow(M, r, scale):
         M[r] = [scale*i for i in M[r]]
 
 
-# In[ ]:
+# In[16]:
 
 
 # run following code to test your scaleRow function
 get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test_scaleRow')
 
 
-# In[ ]:
+# In[17]:
 
 
 # TODO r1 <--- r1 + r2*scale
@@ -233,7 +226,7 @@ def addScaledRow(M, r1, r2, scale):
         raise IndexError('list index out of range')
 
 
-# In[ ]:
+# In[18]:
 
 
 # run following code to test your addScaledRow function
@@ -264,7 +257,26 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 # ### Remark：
 # We don't use the standard algorithm first transfering Ab to row echelon form and then to reduced row echelon form.  Instead, we arrives directly at reduced row echelon form. If you are familiar with the stardard way, try prove to yourself that they are equivalent. 
 
-# In[ ]:
+# In[19]:
+
+
+from helper import *
+A = generateMatrix(3,seed,singular=False)
+b = np.ones(shape=(3,1),dtype=int) #doesn't matter
+Ab = augmentMatrix(A.tolist(),b.tolist())
+printInMatrixFormat(Ab,padding=3,truncating=0)
+
+
+# In[20]:
+
+
+A = generateMatrix(3,seed,singular=True)
+b = np.ones(shape=(3,1),dtype=int)
+Ab = augmentMatrix(A.tolist(),b.tolist())
+printInMatrixFormat(Ab,padding=3,truncating=0)
+
+
+# In[21]:
 
 
 #TODO implement gaussian jordan method to solve Ax = b
@@ -281,40 +293,51 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 """
 
 def gj_Solve(A, b, decPts=4, epsilon = 1.0e-16):
-    if len(A) != len(b):
-        raise ValueError
-    elif len(A) != len(A[0]):
-        raise ValueError
-    else:
-        Ab = augmentMatrix(A, b)
-        matxRound(Ab, decPts)
-        num_row, num_col = shape(Ab)
-        for c in range(num_col-1):
-            current_max = 0.0
-            current_row = c
-            for r in range(c, num_row):
-                if abs(Ab[r][c]) > current_max:
-                    current_max = abs(Ab[r][c])
-                    current_row = r
-            if abs(current_max) < epsilon:
-                return None
-            else:
-                swapRows(Ab, c, current_row)
-                while abs((Ab[c][c]-1.0)) >= epsilon:
-                    scaleRow(Ab, c, 1.0 / Ab[c][c])
-                for j in range(c):
-                    while abs(Ab[j][c]) >= epsilon:
-                        addScaleRow(Ab, j, c, -Ab[j][c])
-                for j in range(c + 1, num_row):
-                    while abs(Ab[j][c]) >= epsilon:
-                        addScaleRow(Ab, j, c, -Ab[j][c])
-        res = []
-        for row in range(num_row):
-            res.append([Ab[row][-1]])
-        return res
+    
+    if(len(A) != len(b)):
+        return None
+    
+    Ab = augmentMatrix(A, b)
+    row, column = shape(Ab)
+    
+    for index in range(column - 1):
+        r = index
+        max_list = []
+        r_max_index = []
+        
+        while(r < row):
+            max_list.append(abs(Ab[r][index]))
+            r_max_index.append(r)
+            r = r + 1
+            
+        x_max = max(max_list)
+        m_index = max_list.index(x_max)
+        max_row = r_max_index[m_index]
+        
+        if x_max < epsilon:
+            return None
+        elif max_row != index:
+            swapRows(Ab, index, max_row)
+            
+        scale = 1.0 / Ab[index][index]
+        scaleRow(Ab, index, scale)
+        
+        j = 0
+        while(j < row):
+            if j == index:
+                j = j + 1
+                continue
+            num = - Ab[j][index]
+            addScaledRow(Ab, j, index, num)
+    printInMatrixFormat(Ab)
+    result_list = []
+    for n in range(row):
+        result_list.append([round(Ab[n][-1],decPts)])
+    print("result_list:" + format(result_list))
+    return result_list
 
 
-# In[ ]:
+# In[22]:
 
 
 # run following code to test your addScaledRow function
@@ -394,6 +417,23 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 # 
 # TODO Proof：
 
+# In[25]:
+
+
+from helper import *
+from matplotlib import pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+X,Y = generatePoints(seed,num=100)
+
+## visualization
+plt.xlim((-5,5))
+plt.xlabel('x',fontsize=18)
+plt.ylabel('y',fontsize=18)
+plt.scatter(X,Y,c='b')
+plt.show()
+
+
 # ## 3.1 Compute the gradient of loss function with respect to parameters 
 # ## (Choose one between two 3.1 questions)
 # We define loss funtion $E$ as 
@@ -437,7 +477,7 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 # ## 3.2  Linear Regression
 # ### Solve equation $X^TXh = X^TY $ to compute the best parameter for linear regression.
 
-# In[ ]:
+# In[29]:
 
 
 #TODO implement linear regression 
@@ -445,14 +485,14 @@ get_ipython().run_line_magic('run', '-i -e test.py LinearRegressionTestCase.test
 points: list of (x,y) tuple
 return m and b
 '''
-def linearRegression(points):
-    X = [[x, 1] for x in X]
-    Y - [[y] for y in Y]
+def linearRegression(X,Y):
+    X = [[v, 1] for v in X]
+    Y = [[v] for v in Y]
     XT = transpose(X)
     A = matxMultiply(XT, X)
-    b = matxMultiply(XT, Y)
-    ret = gi_solve(A, b)
-    return ret[0][0], ret[1][0]
+    b = matxMultiply(XT,Y)
+    result_list = gj_Solve(A, b)
+    return tuple([v[0] for v in result])
 
 m,b = linearRegression(X,Y)
 print(m,b)
